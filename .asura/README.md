@@ -24,3 +24,14 @@ repository.
 
 When a library's soname changes, add its new line to `common/shlibs` and bump
 `revision=` of every package built against it (xbps-src names them).
+
+## Setup (once, by an owner)
+
+- The default branch of this fork is `asura`: GitHub runs scheduled workflows
+  only from the default branch.
+- Secret `ASURA_BOT_TOKEN`: a fine-grained token for this repository with
+  Contents, Pull requests and Workflows set to read and write. The sync needs
+  it to push the rebased branch (which rewrites the workflow files), and the
+  bump needs it so its pull requests start Check build.
+- Void's own scheduled workflows that only make sense in Void's repository
+  (Stale Cleanup, Build buildroot containers) are disabled in the Actions tab.

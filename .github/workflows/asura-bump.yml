@@ -22,11 +22,16 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
-      GH_TOKEN: ${{ github.token }}
+      GH_TOKEN: ${{ secrets.ASURA_BOT_TOKEN || github.token }}
     steps:
       - uses: actions/checkout@v5
         with:
           ref: asura
+          # A token with the workflows permission: GitHub's built-in token
+          # may not push commits that touch .github/workflows (every rebase
+          # rewrites them), and pull requests it opens do not start other
+          # workflows (Check build). See .asura/README.md.
+          token: ${{ secrets.ASURA_BOT_TOKEN || github.token }}
       - name: Find newer releases and update the templates
         id: bump
         run: |
