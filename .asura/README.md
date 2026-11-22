@@ -3,15 +3,16 @@
 This repository is a fork of void-linux/void-packages.
 
 - `master` is always identical to Void's master. Never commit to it.
-- `asura` is `master` plus the recipes ASURA maintains: the Hyprland stack
+- `asura` is Void's master merged with the recipes ASURA maintains: the Hyprland stack
   (listed in `.asura/stack`) and the rebuilds their library changes need.
   All ASURA work and every pull request targets `asura`.
 
 Workflows (on `asura`):
 
-- `asura-sync`: daily, fast-forwards `master` from Void and rebases `asura`
-  onto it. If the rebase conflicts it pushes nothing and fails, so the
-  conflict is fixed by hand.
+- `asura-sync`: daily, fast-forwards `master` from Void and merges it into
+  `asura` (the same as GitHub's "Sync fork" button, so either can be used).
+  History is never rewritten. If the merge conflicts it pushes nothing and
+  fails, so the conflict is fixed by hand.
 - `asura-bump`: daily, checks each package in `.asura/stack` for a newer
   upstream release, and opens one pull request into `asura` with the new
   versions and checksums. It never merges.
@@ -31,7 +32,7 @@ When a library's soname changes, add its new line to `common/shlibs` and bump
   only from the default branch.
 - Secret `ASURA_BOT_TOKEN`: a fine-grained token for this repository with
   Contents, Pull requests and Workflows set to read and write. The sync needs
-  it to push the rebased branch (which rewrites the workflow files), and the
+  it to push when a merge from Void changes Void's workflow files, and the
   bump needs it so its pull requests start Check build.
 - Void's own scheduled workflows that only make sense in Void's repository
   (Stale Cleanup, Build buildroot containers) are disabled in the Actions tab.
