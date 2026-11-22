@@ -21,6 +21,18 @@ distfiles="https://github.com/hyprwm/Hyprland/releases/download/v${version}/sour
 checksum=34dbec0738ab88c8228caf89385662688ab1601ea58fbe5c60a6b6ab383db46d
 wrksrc="hyprland-source"
 
+pre_configure() {
+	# #embed needs GCC 15; Void ships GCC 14. Generate the same bytes as a list
+	# and include it instead.
+	python3 - <<'PY'
+data = open("example/hyprland.lua", "rb").read()
+with open("src/config/lua/example_config_bytes.inc", "w") as out:
+    out.write(",".join(str(b) for b in data))
+PY
+	vsed -i 's|#embed "../../../example/hyprland.lua"|#include "example_config_bytes.inc"|' \
+		src/config/lua/DefaultConfig.hpp
+}
+
 post_install() {
 	vlicense LICENSE
 }
