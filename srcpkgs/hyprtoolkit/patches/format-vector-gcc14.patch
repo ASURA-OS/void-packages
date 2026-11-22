@@ -1,0 +1,20 @@
+--- a/src/system/Icons.cpp	2026-11-22 16:33:38.432719897 +0000
++++ b/src/system/Icons.cpp	2026-11-22 16:33:38.458455558 +0000
+@@ -120,7 +120,7 @@
+             // try to find it
+             auto themeDir = getThemeDir(iconTheme);
+             if (themeDir && !themeDir->empty()) {
+-                g_logger->log(HT_LOG_TRACE, "CSystemIconFactory: Found {} as default fallback", themeDir.value());
++                g_logger->log(HT_LOG_TRACE, "CSystemIconFactory: Found {} as default fallback", [&] { std::string out; for (const auto& d : themeDir.value()) { if (!out.empty()) out += ", "; out += d; } return out; }());
+                 return themeDir;
+             }
+ 
+@@ -240,7 +240,7 @@
+ 
+             auto inheritTheme = getThemeDir(trim(std::string{inheritName}));
+             if (inheritTheme) {
+-                g_logger->log(HT_LOG_TRACE, "CSystemIconFactory: parsing inherited theme {}", *inheritTheme);
++                g_logger->log(HT_LOG_TRACE, "CSystemIconFactory: parsing inherited theme {}", [&] { std::string out; for (const auto& d : *inheritTheme) { if (!out.empty()) out += ", "; out += d; } return out; }());
+                 parseThemes(*inheritTheme);
+             } else
+                 g_logger->log(HT_LOG_WARNING, "CSystemIconFactory: inherited theme {} not found", std::string{inheritName});
