@@ -38,7 +38,10 @@ jobs:
           git fetch --no-tags void master
           new=$(git rev-parse void/master)
           # master stays an exact copy of Void's.
-          git push origin "$new:refs/heads/master"
+          if ! git push origin "$new:refs/heads/master"; then
+            echo "::error::pushing master was refused: check that the ASURA_BOT_TOKEN secret exists and has Contents and Workflows read/write on this repository (see .asura/README.md)"
+            exit 1
+          fi
           if git merge-base --is-ancestor "$new" HEAD; then
             echo "asura already has Void's newest master ($new)"
             exit 0

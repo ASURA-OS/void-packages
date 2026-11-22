@@ -1,8 +1,12 @@
 # Packages ASURA maintains on this branch, and the upstream git repository
 # each follows. The version-bump workflow reads this list.
 #
-# package                       upstream
-glaze                           stephenberry/glaze
+# An optional third column keeps a package within a release series: "7"
+# follows 7.x only. Use it when something in the stack needs that series
+# (Hyprland 0.57 builds only against glaze 7.x: find_package(glaze 7...<8)).
+#
+# package                       upstream                    series
+glaze                           stephenberry/glaze          7
 hyprland-protocols              hyprwm/hyprland-protocols
 hyprutils                       hyprwm/hyprutils
 hyprwayland-scanner             hyprwm/hyprwayland-scanner
