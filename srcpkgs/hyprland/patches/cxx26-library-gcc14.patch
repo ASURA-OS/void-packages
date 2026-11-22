@@ -12,13 +12,13 @@ diff -ru a/src/config/shared/parserUtils/ParserUtils.cpp b/src/config/shared/par
      return *res;
 diff -ru a/src/helpers/MiscFunctions.cpp b/src/helpers/MiscFunctions.cpp
 --- a/src/helpers/MiscFunctions.cpp	2026-11-22 16:54:25.680673104 +0000
-+++ b/src/helpers/MiscFunctions.cpp	2026-11-22 16:54:25.711835737 +0000
++++ b/src/helpers/MiscFunctions.cpp	2026-11-22 16:58:54.545564317 +0000
 @@ -474,7 +474,7 @@
      });
  
      return [&](auto&&... prefixes) -> bool {
 -        return (... || std::ranges::starts_with(str_view, prefixes));
-+        return (... || std::string_view{str_view}.starts_with(prefixes));
++        return (... || std::ranges::mismatch(str_view, prefixes).in2 == std::ranges::end(prefixes));
      }("true"sv, "yes"sv, "on"sv);
      // clang-format on
  }
