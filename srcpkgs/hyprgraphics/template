@@ -18,3 +18,13 @@ checksum=27e9e19ff59ba75a2963d72c3dcb5c0840b266b90d7fca6d5df7cac105419b08
 post_install() {
 	vlicense LICENSE
 }
+
+hyprgraphics-devel_package() {
+	depends="${sourcepkg}>=${version}_${revision} hyprutils cairo-devel pango-devel MesaLib-devel libdrm-devel pixman-devel libpng-devel libjpeg-turbo-devel libwebp-devel librsvg-devel file-devel libjxl-devel libheif-devel"
+	short_desc+=" - development files"
+	pkg_install() {
+		vmove usr/include
+		vmove usr/lib/pkgconfig
+		vmove "usr/lib/*.so"
+	}
+}

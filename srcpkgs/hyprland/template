@@ -5,7 +5,7 @@ revision=1
 build_style=cmake
 configure_args="-DNO_SYSTEMD=ON -DBUILD_TESTING=OFF"
 hostmakedepends="pkg-config hyprwayland-scanner wayland-devel glslang"
-makedepends="aquamarine hyprlang hyprcursor hyprutils hyprgraphics
+makedepends="aquamarine hyprlang hyprcursor hyprutils hyprgraphics-devel
  hyprland-protocols glaze lua55-devel udis86-devel libxkbcommon-devel
  libuuid-devel wayland-devel wayland-protocols cairo-devel pango-devel
  pixman-devel libXcursor-devel libdrm-devel libinput-devel libei-devel

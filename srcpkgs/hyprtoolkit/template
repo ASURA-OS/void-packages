@@ -5,7 +5,7 @@ revision=1
 build_style=cmake
 configure_args="-DBUILD_TESTING=OFF"
 hostmakedepends="pkg-config hyprwayland-scanner wayland-devel"
-makedepends="aquamarine hyprgraphics hyprutils hyprlang wayland-devel
+makedepends="aquamarine hyprgraphics-devel hyprutils hyprlang wayland-devel
  wayland-protocols MesaLib-devel pixman-devel libdrm-devel libgbm-devel
  libxkbcommon-devel pango-devel cairo-devel iniparser-devel abseil-cpp-devel"
 short_desc="Modern C++ Wayland-native GUI toolkit for Hyprland apps"
@@ -17,4 +17,14 @@ checksum=53c41be72af97d9ede274a63c9c1034c58726d862905763ed6e5a564ae42ba6b
 
 post_install() {
 	vlicense LICENSE
+}
+
+hyprtoolkit-devel_package() {
+	depends="${sourcepkg}>=${version}_${revision} aquamarine hyprgraphics-devel hyprutils hyprlang wayland-devel MesaLib-devel pixman-devel libdrm-devel libgbm-devel libxkbcommon-devel pango-devel cairo-devel iniparser-devel abseil-cpp-devel"
+	short_desc+=" - development files"
+	pkg_install() {
+		vmove usr/include
+		vmove usr/lib/pkgconfig
+		vmove "usr/lib/*.so"
+	}
 }
