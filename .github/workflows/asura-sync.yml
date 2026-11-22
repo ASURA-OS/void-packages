@@ -1,0 +1,52 @@
+name: asura-sync
+
+# Keep master identical to Void's, and asura rebased onto it.
+
+on:
+  schedule:
+    - cron: "17 3 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: asura-sync
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    if: github.repository == 'ASURA-OS/void-packages'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: asura
+          fetch-depth: 0
+      - name: Rebase asura onto Void's master
+        run: |
+          set -eu
+          git config user.name "asura-sync"
+          git config user.email "asura-sync@users.noreply.github.com"
+          git remote add void https://github.com/void-linux/void-packages.git
+          git fetch --no-tags void master
+          git fetch --no-tags origin master
+          base=$(git rev-parse origin/master)
+          new=$(git rev-parse void/master)
+          if [ "$base" = "$new" ]; then
+            echo "master is already Void's newest ($new)"
+            exit 0
+          fi
+          if ! git merge-base --is-ancestor "$base" "$new"; then
+            echo "::error::origin/master is not an ancestor of Void's master; fix master by hand"
+            exit 1
+          fi
+          if ! git rebase --onto "$new" "$base" asura; then
+            git rebase --abort || true
+            echo "::error::asura does not rebase cleanly onto Void's master; resolve by hand (git rebase --onto void/master origin/master asura)"
+            exit 1
+          fi
+          git push origin "$new:refs/heads/master"
+          git push --force-with-lease=asura origin asura
+          echo "master -> $new; asura rebased"

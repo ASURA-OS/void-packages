@@ -1,0 +1,26 @@
+# Template file for 'hyprland'
+pkgname=hyprland
+version=0.57.2
+revision=1
+build_style=cmake
+configure_args="-DNO_SYSTEMD=ON -DBUILD_TESTING=OFF"
+hostmakedepends="pkg-config hyprwayland-scanner wayland-devel glslang"
+makedepends="aquamarine hyprlang hyprcursor hyprutils hyprgraphics
+ hyprland-protocols glaze lua55-devel udis86-devel libxkbcommon-devel
+ libuuid-devel wayland-devel wayland-protocols cairo-devel pango-devel
+ pixman-devel libXcursor-devel libdrm-devel libinput-devel libei-devel
+ libgbm-devel MesaLib-devel glslang-devel glib-devel re2-devel muparser-devel
+ lcms2-devel libcanberra-devel libxcb-devel xcb-util-errors-devel
+ xcb-util-wm-devel xcb-util-renderutil-devel"
+depends="xorg-server-xwayland"
+short_desc="Dynamic tiling Wayland compositor"
+maintainer="mohitjoer <mohitjoe.r@gmail.com>"
+license="BSD-3-Clause"
+homepage="https://hypr.land"
+distfiles="https://github.com/hyprwm/Hyprland/releases/download/v${version}/source-v${version}.tar.gz"
+checksum=34dbec0738ab88c8228caf89385662688ab1601ea58fbe5c60a6b6ab383db46d
+wrksrc="hyprland-source"
+
+post_install() {
+	vlicense LICENSE
+}

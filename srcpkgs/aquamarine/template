@@ -1,0 +1,20 @@
+# Template file for 'aquamarine'
+pkgname=aquamarine
+version=0.16.0
+revision=1
+build_style=cmake
+configure_args="-DBUILD_TESTING=OFF"
+hostmakedepends="pkg-config hyprwayland-scanner wayland-devel"
+makedepends="hyprutils libseat-devel libinput-devel wayland-devel
+ wayland-protocols pixman-devel libdrm-devel libgbm-devel eudev-libudev-devel
+ libdisplay-info-devel hwids MesaLib-devel"
+short_desc="Very light linux rendering backend library"
+maintainer="mohitjoer <mohitjoe.r@gmail.com>"
+license="BSD-3-Clause"
+homepage="https://github.com/hyprwm/aquamarine"
+distfiles="https://github.com/hyprwm/aquamarine/archive/refs/tags/v${version}.tar.gz"
+checksum=42339c3096c9de6582c0d71bc86b7e63334a3faf6a2b917d385ad093caf66c3c
+
+post_install() {
+	vlicense LICENSE
+}

@@ -1,0 +1,82 @@
+name: asura-bump
+
+# Open one pull request into asura when any package in .asura/stack has a
+# newer upstream release. It never merges.
+
+on:
+  schedule:
+    - cron: "41 4 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: asura-bump
+  cancel-in-progress: false
+
+jobs:
+  bump:
+    if: github.repository == 'ASURA-OS/void-packages'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: asura
+      - name: Find newer releases and update the templates
+        id: bump
+        run: |
+          set -eu
+          changes=""
+          while read -r pkg upstream; do
+            case "$pkg" in ''|'#'*) continue ;; esac
+            tmpl="srcpkgs/$pkg/template"
+            cur=$(sed -n 's/^version=//p' "$tmpl")
+            latest=$(git ls-remote --tags --refs "https://github.com/$upstream" \
+              | sed 's#.*refs/tags/##' | sed -n 's/^v\{0,1\}\([0-9][0-9.]*\)$/\1/p' \
+              | sort -V | tail -1)
+            [ -n "$latest" ] || { echo "$pkg: no release tags"; continue; }
+            if [ "$(printf '%s\n%s\n' "$cur" "$latest" | sort -V | tail -1)" = "$cur" ]; then
+              echo "$pkg: $cur is current"; continue
+            fi
+            url=$(sed -n 's/^distfiles="\(.*\)"$/\1/p' "$tmpl" | sed "s/\${version}/$latest/g")
+            curl -fsSL --retry 3 -o /tmp/dist "$url"
+            sum=$(sha256sum /tmp/dist | cut -d' ' -f1)
+            sed -i -e "s/^version=.*/version=$latest/" -e "s/^revision=.*/revision=1/" \
+                   -e "s/^checksum=.*/checksum=$sum/" "$tmpl"
+            echo "$pkg: $cur -> $latest"
+            changes="$changes $pkg:$cur:$latest:$upstream"
+          done < .asura/stack
+          echo "changes=$changes" >> "$GITHUB_OUTPUT"
+      - name: Open or update the pull request
+        if: steps.bump.outputs.changes != ''
+        run: |
+          set -eu
+          changes="${{ steps.bump.outputs.changes }}"
+          title="hyprland stack:"
+          body="Newer upstream releases (opened by asura-bump; never merged automatically).\n\n"
+          for c in $changes; do
+            IFS=: read -r pkg old new upstream <<EOT
+          $c
+          EOT
+            title="$title $pkg $old -> $new,"
+            body="$body- $pkg: $old -> $new (https://github.com/$upstream/releases/tag/v$new)\n"
+          done
+          title=${title%,}
+          body="$body\nIf a library's soname changed, Check build says which common/shlibs line to add and which packages to revbump: push those fixes to this branch."
+          branch="bump/$(echo "$changes" | sha256sum | cut -c1-12)"
+          git config user.name "asura-bump"
+          git config user.email "asura-bump@users.noreply.github.com"
+          git checkout -B "$branch"
+          git commit -qam "$title"
+          git push -f origin "$branch"
+          if gh pr view "$branch" >/dev/null 2>&1; then
+            echo "pull request for $branch already open"
+          else
+            printf "$body" > /tmp/body
+            gh pr create --base asura --head "$branch" --title "$title" --body-file /tmp/body
+          fi
