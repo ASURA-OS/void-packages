@@ -84,10 +84,18 @@ jobs:
           title=${title%,}
           body="$body\nIf a library's soname changed, Check build says which common/shlibs line to add and which packages to revbump: push those fixes to this branch."
           branch="bump/$(echo "$changes" | sha256sum | cut -c1-12)"
-          git config user.name "asura-bump"
-          git config user.email "asura-bump@users.noreply.github.com"
+          # Void's commit lint (common/scripts/lint-commits) rejects noreply
+          # authors and wants "pkg: update to X." subjects, one per package.
+          git config user.name "mohitjoer"
+          git config user.email "mohitjoe.r@gmail.com"
           git checkout -B "$branch"
-          git commit -qam "$title"
+          for c in $changes; do
+            IFS=: read -r pkg old new upstream <<EOT
+          $c
+          EOT
+            git add "srcpkgs/$pkg/template"
+            git commit -q -s -m "$pkg: update to $new."
+          done
           if ! git push -f origin "$branch"; then
             echo "::error::pushing $branch was refused: check that the ASURA_BOT_TOKEN secret exists and has Contents and Workflows read/write on this repository (see .asura/README.md)"
             exit 1
