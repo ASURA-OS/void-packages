@@ -4,14 +4,14 @@ version=0.57.2
 revision=1
 build_style=cmake
 configure_args="-DNO_SYSTEMD=ON -DBUILD_TESTING=OFF"
-hostmakedepends="pkg-config hyprwayland-scanner wayland-devel glslang"
+hostmakedepends="pkg-config hyprwayland-scanner wayland-devel glslang hyprwire"
 makedepends="aquamarine hyprlang hyprcursor hyprutils hyprgraphics-devel
  hyprland-protocols glaze lua55-devel udis86-devel libxkbcommon-devel
  libuuid-devel wayland-devel wayland-protocols cairo-devel pango-devel
  pixman-devel libXcursor-devel libdrm-devel libinput-devel libei-devel
  libgbm-devel MesaLib-devel glslang-devel glib-devel re2-devel muparser-devel
  lcms2-devel libcanberra-devel libxcb-devel xcb-util-errors-devel SPIRV-Tools-devel
- xcb-util-wm-devel xcb-util-renderutil-devel"
+ xcb-util-wm-devel xcb-util-renderutil-devel hyprwire readline-devel"
 depends="xorg-server-xwayland"
 short_desc="Dynamic tiling Wayland compositor"
 maintainer="mohitjoer <mohitjoe.r@gmail.com>"
