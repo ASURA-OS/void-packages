@@ -1,0 +1,11 @@
+--- a/src/xwayland/XWM.hpp	2026-11-22 16:41:40.216137188 +0000
++++ b/src/xwayland/XWM.hpp	2026-11-22 16:41:40.226923154 +0000
+@@ -216,7 +216,7 @@
+     std::vector<SP<CX11DataOffer>>            m_dndDataOffers;
+ 
+     inline xcb_connection_t*                  getConnection() {
+-        return m_connection ? *m_connection : nullptr;
++        return m_connection ? static_cast<xcb_connection_t*>(*m_connection) : nullptr;
+     }
+     struct {
+         CHyprSignalListener newWLSurface;
