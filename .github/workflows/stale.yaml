@@ -8,6 +8,8 @@ on:
 
 jobs:
   stale:
+    # Void's own upkeep: skipped in ASURA's fork.
+    if: github.repository == 'void-linux/void-packages'
     runs-on: ubuntu-latest
     permissions:
       issues: write
