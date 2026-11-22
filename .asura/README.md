@@ -34,5 +34,6 @@ When a library's soname changes, add its new line to `common/shlibs` and bump
   Contents, Pull requests and Workflows set to read and write. The sync needs
   it to push when a merge from Void changes Void's workflow files, and the
   bump needs it so its pull requests start Check build.
-- Void's own scheduled workflows that only make sense in Void's repository
-  (Stale Cleanup, Build buildroot containers) are disabled in the Actions tab.
+- Void's own workflows that only make sense in Void's repository (Stale
+  Cleanup, Build buildroot containers) run their jobs only there: in this
+  fork they show as skipped. Nothing to disable by hand.
