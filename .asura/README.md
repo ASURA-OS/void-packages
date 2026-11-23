@@ -12,7 +12,8 @@ Workflows (on `asura`):
 - `asura-sync`: daily, fast-forwards `master` from Void and merges it into
   `asura` (the same as GitHub's "Sync fork" button, so either can be used).
   History is never rewritten. If the merge conflicts it pushes nothing and
-  fails, so the conflict is fixed by hand.
+  fails, so the conflict is fixed by hand. After each sync, it checks for library
+  soname bumps in Void that affect the stack and opens a rebuild PR.
 - `asura-bump`: daily, checks each package in `.asura/stack` for a newer
   upstream release, and opens one pull request into `asura` with the new
   versions and checksums. It never merges.
