@@ -47,6 +47,11 @@ jobs:
           git remote add void https://github.com/void-linux/void-packages.git
           git fetch --no-tags void master
           new=$(git rev-parse void/master)
+          # Void's master as this fork had it before: the soname watch looks
+          # at what Void changed between the two.
+          old=$(git rev-parse origin/master)
+          echo "VOID_OLD=$old" >>"$GITHUB_ENV"
+          echo "VOID_NEW=$new" >>"$GITHUB_ENV"
           # master stays an exact copy of Void's.
           if ! git push origin "$new:refs/heads/master"; then
             echo "::error::pushing master was refused: check that the ASURA_BOT_TOKEN secret exists and has Contents and Workflows read/write on this repository (see .asura/README.md)"
@@ -69,4 +74,4 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.ASURA_BOT_TOKEN || github.token }}
         run: |
-          python3 .asura/shlib-watch.py --base void/master --commit --pr
+          python3 .asura/shlib-watch.py --old "$VOID_OLD" --new "$VOID_NEW" --commit --pr
