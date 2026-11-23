@@ -6,13 +6,13 @@ build_style=cmake
 configure_args="-DBUILD_TESTING=OFF"
 hostmakedepends="pkg-config"
 makedepends="hyprutils libffi-devel pugixml-devel"
-nocross="ASURA builds this stack for x86_64 only"
 short_desc="Fast and consistent wire protocol for IPC in the Hyprland ecosystem"
 maintainer="mohitjoer <mohitjoe.r@gmail.com>"
 license="BSD-3-Clause"
 homepage="https://github.com/hyprwm/hyprwire"
 distfiles="https://github.com/hyprwm/hyprwire/archive/refs/tags/v${version}.tar.gz"
 checksum=92a673d40ae6a7d66fbcd0a34ec071e026e17eaeeb0040c3375e4b2a80dba737
+nocross="ASURA builds this stack for x86_64 only"
 
 post_install() {
 	vlicense LICENSE
