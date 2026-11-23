@@ -8,6 +8,7 @@ hostmakedepends="pkg-config hyprwayland-scanner wayland-devel"
 makedepends="aquamarine hyprgraphics-devel hyprutils hyprlang wayland-devel
  wayland-protocols MesaLib-devel pixman-devel libdrm-devel libgbm-devel
  libxkbcommon-devel pango-devel cairo-devel iniparser-devel abseil-cpp-devel"
+nocross="ASURA builds this stack for x86_64 only"
 short_desc="Modern C++ Wayland-native GUI toolkit for Hyprland apps"
 maintainer="mohitjoer <mohitjoe.r@gmail.com>"
 license="BSD-3-Clause"

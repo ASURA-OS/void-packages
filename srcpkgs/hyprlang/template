@@ -6,6 +6,7 @@ build_style=cmake
 configure_args="-DBUILD_TESTING=OFF"
 hostmakedepends="pkg-config"
 makedepends="hyprutils"
+nocross="ASURA builds this stack for x86_64 only"
 short_desc="Official implementation library for the hypr config language"
 maintainer="mohitjoer <mohitjoe.r@gmail.com>"
 license="LGPL-3.0-only"

@@ -8,6 +8,7 @@ hostmakedepends="pkg-config"
 makedepends="hyprutils libdrm-devel pixman-devel cairo-devel pango-devel
  libjpeg-turbo-devel libwebp-devel file-devel libpng-devel librsvg-devel
  libjxl-devel libheif-devel MesaLib-devel"
+nocross="ASURA builds this stack for x86_64 only"
 short_desc="Hyprland graphics and resource utilities library"
 maintainer="mohitjoer <mohitjoe.r@gmail.com>"
 license="BSD-3-Clause"

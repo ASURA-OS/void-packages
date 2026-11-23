@@ -5,6 +5,7 @@ revision=1
 build_style=cmake
 hostmakedepends="pkg-config"
 makedepends="pugixml-devel"
+nocross="ASURA builds this stack for x86_64 only"
 short_desc="Hyprland implementation of wayland-scanner, in and for C++"
 maintainer="ii8 <murray.calavera@protonmail.com>"
 license="BSD-3-Clause"

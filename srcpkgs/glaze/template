@@ -4,6 +4,7 @@ version=7.9.1
 revision=1
 build_style=cmake
 configure_args="-Dglaze_DEVELOPER_MODE=OFF -Dglaze_ENABLE_FUZZING=OFF -Dglaze_BUILD_EXAMPLES=OFF -DBUILD_TESTING=OFF"
+nocross="ASURA builds this stack for x86_64 only"
 short_desc="Extremely fast, in memory, JSON and reflection library for modern C++"
 maintainer="mohitjoer <mohitjoe.r@gmail.com>"
 license="MIT"

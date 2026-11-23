@@ -8,6 +8,7 @@ hostmakedepends="pkg-config hyprwayland-scanner wayland-devel"
 makedepends="hyprutils libseat-devel libinput-devel wayland-devel
  wayland-protocols pixman-devel libdrm-devel libgbm-devel eudev-libudev-devel
  libdisplay-info-devel hwids MesaLib-devel"
+nocross="ASURA builds this stack for x86_64 only"
 short_desc="Very light linux rendering backend library"
 maintainer="mohitjoer <mohitjoe.r@gmail.com>"
 license="BSD-3-Clause"

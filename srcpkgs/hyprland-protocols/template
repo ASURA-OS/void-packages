@@ -3,6 +3,7 @@ pkgname=hyprland-protocols
 version=0.8.0
 revision=1
 build_style=cmake
+nocross="ASURA builds this stack for x86_64 only"
 short_desc="Wayland protocol extensions for Hyprland"
 maintainer="mohitjoer <mohitjoe.r@gmail.com>"
 license="BSD-3-Clause"

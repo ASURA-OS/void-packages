@@ -7,6 +7,7 @@ configure_args="-DBUILD_TESTING=OFF"
 hostmakedepends="pkg-config hyprwayland-scanner wayland-devel"
 makedepends="wayland-devel wayland-protocols hyprlang hyprutils
  hyprland-protocols sdbus-c++-devel"
+nocross="ASURA builds this stack for x86_64 only"
 short_desc="Hyprland's idle daemon"
 maintainer="mohitjoer <mohitjoe.r@gmail.com>"
 license="BSD-3-Clause"

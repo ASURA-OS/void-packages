@@ -8,6 +8,7 @@ hostmakedepends="pkg-config hyprwayland-scanner wayland-devel"
 makedepends="wayland-devel wayland-protocols pipewire-devel libdrm-devel
  libuuid-devel libgbm-devel hyprlang hyprutils hyprland-protocols sdbus-c++-devel hyprtoolkit-devel"
 depends="xdg-desktop-portal"
+nocross="ASURA builds this stack for x86_64 only"
 short_desc="XDG desktop portal backend for Hyprland"
 maintainer="mohitjoer <mohitjoe.r@gmail.com>"
 license="BSD-3-Clause"

@@ -6,6 +6,7 @@ build_style=cmake
 configure_args="-DBUILD_TESTING=OFF"
 hostmakedepends="pkg-config"
 makedepends="hyprutils libffi-devel pugixml-devel"
+nocross="ASURA builds this stack for x86_64 only"
 short_desc="Fast and consistent wire protocol for IPC in the Hyprland ecosystem"
 maintainer="mohitjoer <mohitjoe.r@gmail.com>"
 license="BSD-3-Clause"

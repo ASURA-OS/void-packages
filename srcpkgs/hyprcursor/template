@@ -6,6 +6,7 @@ build_style=cmake
 configure_args="-DBUILD_TESTING=OFF"
 hostmakedepends="pkg-config"
 makedepends="hyprlang hyprutils libzip-devel cairo-devel librsvg-devel tomlplusplus-devel"
+nocross="ASURA builds this stack for x86_64 only"
 short_desc="Hyprland cursor format, library and utilities"
 maintainer="mohitjoer <mohitjoe.r@gmail.com>"
 license="BSD-3-Clause"
