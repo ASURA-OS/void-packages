@@ -9,6 +9,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: write
 
 concurrency:
   group: asura-sync
@@ -64,3 +65,8 @@ jobs:
           fi
           git push origin HEAD:asura
           echo "merged Void's master ($new) into asura"
+      - name: Watch for soname bumps and open pull requests for affected stack packages
+        env:
+          GH_TOKEN: ${{ secrets.ASURA_BOT_TOKEN || github.token }}
+        run: |
+          python3 .asura/shlib-watch.py --base void/master --commit --pr
