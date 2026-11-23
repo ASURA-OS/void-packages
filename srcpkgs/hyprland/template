@@ -13,22 +13,18 @@ makedepends="aquamarine hyprlang hyprcursor hyprutils hyprgraphics-devel
  lcms2-devel libcanberra-devel libxcb-devel xcb-util-errors-devel SPIRV-Tools-devel
  xcb-util-wm-devel xcb-util-renderutil-devel hyprwire readline-devel tomlplusplus-devel"
 depends="xorg-server-xwayland"
+nocross="ASURA builds this stack for x86_64 only"
 short_desc="Dynamic tiling Wayland compositor"
 maintainer="mohitjoer <mohitjoe.r@gmail.com>"
 license="BSD-3-Clause"
 homepage="https://hypr.land"
 distfiles="https://github.com/hyprwm/Hyprland/releases/download/v${version}/source-v${version}.tar.gz"
 checksum=34dbec0738ab88c8228caf89385662688ab1601ea58fbe5c60a6b6ab383db46d
-wrksrc="hyprland-source"
 
 pre_configure() {
-	# #embed needs GCC 15; Void ships GCC 14. Generate the same bytes as a list
-	# and include it instead.
-	python3 - <<'PY'
-data = open("example/hyprland.lua", "rb").read()
-with open("src/config/lua/example_config_bytes.inc", "w") as out:
-    out.write(",".join(str(b) for b in data))
-PY
+	# #embed needs GCC 15; Void ships GCC 14: include the bytes instead.
+	python3 ${FILESDIR}/embed-config.py example/hyprland.lua \
+		src/config/lua/example_config_bytes.inc
 	vsed -i 's|#embed "../../../example/hyprland.lua"|#include "example_config_bytes.inc"|' \
 		src/config/lua/DefaultConfig.hpp
 }
