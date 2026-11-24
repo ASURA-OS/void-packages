@@ -53,25 +53,40 @@ def get_pkg_dependencies(pkg):
     return deps
 
 
-def get_shlib_changes(base_ref):
-    """Find sonames in common/shlibs that changed between base_ref and HEAD."""
-    cmd = ["git", "diff", f"{base_ref}..HEAD", "--", "common/shlibs"]
+def shlib_lines(ref):
+    """common/shlibs at ref: {pkgname: set of sonames}."""
     try:
-        diff_out = subprocess.check_output(cmd, cwd=REPO_ROOT).decode("utf-8", errors="replace")
+        text = subprocess.check_output(
+            ["git", "show", f"{ref}:common/shlibs"], cwd=REPO_ROOT
+        ).decode("utf-8", errors="replace")
     except subprocess.CalledProcessError:
         return {}
+    out = {}
+    for line in text.splitlines():
+        parts = line.split()
+        if len(parts) < 2 or line.startswith("#"):
+            continue
+        # parts[1] is a pkgver: <name>-<version>_<revision>
+        name = parts[1].rsplit("-", 1)[0]
+        out.setdefault(name, set()).add(parts[0])
+    return out
 
-    # Map of pkgname -> set of changed sonames
+
+def get_shlib_changes(old_ref, new_ref, skip):
+    """Libraries whose soname Void changed between old_ref and new_ref.
+
+    Only real bumps count: a package that had a soname at old_ref and has a
+    different one at new_ref. Newly added libraries need no rebuild, and the
+    stack's own libraries (skip) are ASURA's, not Void's, to change.
+    """
+    old, new = shlib_lines(old_ref), shlib_lines(new_ref)
     changes = {}
-    for line in diff_out.splitlines():
-        if line.startswith("+") and not line.startswith("+++"):
-            parts = line[1:].strip().split()
-            if len(parts) >= 2:
-                soname = parts[0]
-                pkg_match = re.match(r"^([a-zA-Z0-9_-]+)-[0-9]", parts[1])
-                if pkg_match:
-                    pkgname = pkg_match.group(1)
-                    changes.setdefault(pkgname, set()).add(soname)
+    for name, sonames in new.items():
+        if name in skip or name not in old:
+            continue
+        added = sonames - old[name]
+        if added and old[name] - sonames:
+            changes[name] = added
     return changes
 
 
@@ -96,7 +111,8 @@ def bump_package_revision(pkg, reason=""):
 
 def main():
     parser = argparse.ArgumentParser(description="Watch for shlib soname bumps affecting ASURA stack")
-    parser.add_argument("--base", default="void/master", help="Base git ref to compare common/shlibs against")
+    parser.add_argument("--old", required=True, help="Void's master before the sync")
+    parser.add_argument("--new", required=True, help="Void's master after the sync")
     parser.add_argument("--commit", action="store_true", help="Commit revbumps adhering to Void commit lint")
     parser.add_argument("--pr", action="store_true", help="Open a pull request into asura with the revbumps")
     args = parser.parse_args()
@@ -104,23 +120,13 @@ def main():
     stack_pkgs = get_stack_packages()
     print(f"shlib-watch: tracking {len(stack_pkgs)} packages in .asura/stack")
 
-    # Verify base exists
-    try:
-        subprocess.check_call(["git", "rev-parse", "--verify", args.base], cwd=REPO_ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    except subprocess.CalledProcessError:
-        # Fallback to HEAD~1 or origin/master if void/master remote is not fetched
-        for candidate in ["origin/master", "HEAD~1"]:
-            try:
-                subprocess.check_call(["git", "rev-parse", "--verify", candidate], cwd=REPO_ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-                args.base = candidate
-                break
-            except subprocess.CalledProcessError:
-                pass
-
-    print(f"shlib-watch: comparing against base ref '{args.base}'")
-    shlib_changes = get_shlib_changes(args.base)
+    print(f"shlib-watch: Void's changes {args.old}..{args.new}")
+    if args.old == args.new:
+        print("shlib-watch: Void's master did not change.")
+        return 0
+    shlib_changes = get_shlib_changes(args.old, args.new, set(stack_pkgs))
     if not shlib_changes:
-        print("shlib-watch: no shared library soname changes detected in common/shlibs.")
+        print("shlib-watch: no soname changes in Void affect anything.")
 
     affected_stack_pkgs = {}
     for pkg in stack_pkgs:
@@ -147,18 +153,25 @@ def main():
             "-c", "user.name=mohitjoer",
             "-c", "user.email=mohitjoe.r@gmail.com",
         ]
-        branch = f"shlib-bump/{subprocess.check_output(['git', 'rev-parse', '--short', 'HEAD'], cwd=REPO_ROOT).decode().strip()}"
+        branch = f"shlib-bump/{args.new[:12]}"
         subprocess.check_call(["git", "checkout", "-B", branch], cwd=REPO_ROOT)
         for pkg, new_rev, so_str in bumped:
             tmpl = f"srcpkgs/{pkg}/template"
             subprocess.check_call(["git", "add", tmpl], cwd=REPO_ROOT)
-            msg = f"{pkg}: revbump for {so_str} soname bump."
-            if len(msg) > 72:
-                msg = f"{pkg}: revbump for library soname bump."
+            msg = f"{pkg}: rebuild for {so_str}"
+            if len(msg) > 50:
+                msg = f"{pkg}: rebuild for soname bump"
             subprocess.check_call(["git"] + git_author_args + ["commit", "-s", "-m", msg], cwd=REPO_ROOT)
         print(f"shlib-watch: committed revbumps to branch '{branch}'")
 
         if args.pr:
+            existing = subprocess.check_output(
+                ["gh", "pr", "list", "--head", branch, "--json", "number", "-q", ".[].number"],
+                cwd=REPO_ROOT,
+            ).decode().strip()
+            if existing:
+                print(f"shlib-watch: pull request #{existing} already open for {branch}")
+                return 0
             subprocess.check_call(["git", "push", "-f", "origin", branch], cwd=REPO_ROOT)
             title = f"hyprland stack: rebuild for soname bumps ({', '.join(b[0] for b in bumped)})"
             body = "Shared library soname updates detected in Void Linux.\n\nRebuilding affected stack packages:\n"

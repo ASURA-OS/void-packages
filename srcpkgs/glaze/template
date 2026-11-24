@@ -10,6 +10,7 @@ license="MIT"
 homepage="https://github.com/stephenberry/glaze"
 distfiles="https://github.com/stephenberry/glaze/archive/refs/tags/v${version}.tar.gz"
 checksum=d6dee391276f5375672c35d06058e4fd8f1f30f62bae163a004b3bd13a4e2ae3
+nocross="ASURA builds this stack for x86_64 only"
 
 post_install() {
 	vlicense LICENSE

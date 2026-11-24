@@ -12,6 +12,7 @@ license="BSD-3-Clause"
 homepage="https://github.com/hyprwm/hyprcursor"
 distfiles="https://github.com/hyprwm/hyprcursor/archive/refs/tags/v${version}.tar.gz"
 checksum=f835995a1225ab169723d5e4e7510e31231dbb3048c4da6de6f6a51794e4cb38
+nocross="ASURA builds this stack for x86_64 only"
 
 post_install() {
 	vlicense LICENSE
