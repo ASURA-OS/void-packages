@@ -1,6 +1,6 @@
 name: asura-sync
 
-# Keep master identical to Void's, and merge it into asura.
+# Keep master identical to Void's, and merge it into Toren.
 
 on:
   schedule:
@@ -32,14 +32,14 @@ jobs:
           fi
       - uses: actions/checkout@v5
         with:
-          ref: asura
+          ref: Toren
           # A token with the workflows permission: GitHub's built-in token
           # may not push commits that touch .github/workflows (every rebase
           # rewrites them), and pull requests it opens do not start other
           # workflows (Check build). See .asura/README.md.
           token: ${{ secrets.ASURA_BOT_TOKEN || github.token }}
           fetch-depth: 0
-      - name: Merge Void's master into asura
+      - name: Merge Void's master into Toren
         run: |
           set -eu
           git config user.name "asura-sync"
@@ -58,18 +58,18 @@ jobs:
             exit 1
           fi
           if git merge-base --is-ancestor "$new" HEAD; then
-            echo "asura already has Void's newest master ($new)"
+            echo "Toren already has Void's newest master ($new)"
             exit 0
           fi
           # A merge, like GitHub's "Sync fork" button: history is never
           # rewritten, so nothing is force-pushed.
-          if ! git merge --no-edit -m "Merge Void's master into asura" void/master; then
+          if ! git merge --no-edit -m "Merge Void's master into Toren" void/master; then
             git merge --abort || true
-            echo "::error::Void's master does not merge cleanly into asura; resolve by hand (git merge void/master)"
+            echo "::error::Void's master does not merge cleanly into Toren; resolve by hand (git merge void/master)"
             exit 1
           fi
-          git push origin HEAD:asura
-          echo "merged Void's master ($new) into asura"
+          git push origin HEAD:Toren
+          echo "merged Void's master ($new) into Toren"
       - name: Watch for soname bumps and open pull requests for affected stack packages
         env:
           GH_TOKEN: ${{ secrets.ASURA_BOT_TOKEN || github.token }}
