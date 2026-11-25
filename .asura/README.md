@@ -3,25 +3,25 @@
 This repository is a fork of void-linux/void-packages.
 
 - `master` is always identical to Void's master. Never commit to it.
-- `asura` is Void's master merged with the recipes ASURA maintains: the Hyprland stack
+- `Toren` is Void's master merged with the recipes ASURA maintains: the Hyprland stack
   (listed in `.asura/stack`) and the rebuilds their library changes need.
-  All ASURA work and every pull request targets `asura`.
+  All ASURA work and every pull request targets `Toren`.
 
-Workflows (on `asura`):
+Workflows (on `Toren`):
 
 - `asura-sync`: daily, fast-forwards `master` from Void and merges it into
-  `asura` (the same as GitHub's "Sync fork" button, so either can be used).
+  `Toren` (the same as GitHub's "Sync fork" button, so either can be used).
   History is never rewritten. If the merge conflicts it pushes nothing and
   fails, so the conflict is fixed by hand. After each sync, it checks for library
   soname bumps in Void that affect the stack and opens a rebuild PR.
 - `asura-bump`: daily, checks each package in `.asura/stack` for a newer
-  upstream release, and opens one pull request into `asura` with the new
+  upstream release, and opens one pull request into `Toren` with the new
   versions and checksums. It never merges.
 - Void's own `Check build` workflow lints and builds every package a pull
   request changes.
 
 Toren Linux's main repository (mohitjoer/Toren-Linux) builds the stack from
-`asura`, tests it against Toren's desktop, and publishes it in Toren's signed
+`Toren`, tests it against Toren's desktop, and publishes it in Toren's signed
 package repository.
 
 When a library's soname changes, add its new line to `common/shlibs` and bump
@@ -29,7 +29,7 @@ When a library's soname changes, add its new line to `common/shlibs` and bump
 
 ## Setup (once, by an owner)
 
-- The default branch of this fork is `asura`: GitHub runs scheduled workflows
+- The default branch of this fork is `Toren`: GitHub runs scheduled workflows
   only from the default branch.
 - Secret `ASURA_BOT_TOKEN`: a fine-grained token for this repository with
   Contents, Pull requests and Workflows set to read and write. The sync needs

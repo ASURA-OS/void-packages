@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Find libraries the ASURA stack links against whose soname changed in Void,
 bump revision= of the affected stack packages, update common/shlibs, and
-optionally open a pull request into asura.
+optionally open a pull request into Toren.
 
 Follows Void Linux commit lint guidelines:
 - Real author email: mohitjoe.r@gmail.com
@@ -114,7 +114,7 @@ def main():
     parser.add_argument("--old", required=True, help="Void's master before the sync")
     parser.add_argument("--new", required=True, help="Void's master after the sync")
     parser.add_argument("--commit", action="store_true", help="Commit revbumps adhering to Void commit lint")
-    parser.add_argument("--pr", action="store_true", help="Open a pull request into asura with the revbumps")
+    parser.add_argument("--pr", action="store_true", help="Open a pull request into Toren with the revbumps")
     args = parser.parse_args()
 
     stack_pkgs = get_stack_packages()
@@ -177,9 +177,9 @@ def main():
             body = "Shared library soname updates detected in Void Linux.\n\nRebuilding affected stack packages:\n"
             for pkg, new_rev, so_str in bumped:
                 body += f"- {pkg}: revision {new_rev} (linked {so_str})\n"
-            pr_cmd = ["gh", "pr", "create", "--base", "asura", "--head", branch, "--title", title, "--body", body]
+            pr_cmd = ["gh", "pr", "create", "--base", "Toren", "--head", branch, "--title", title, "--body", body]
             subprocess.check_call(pr_cmd, cwd=REPO_ROOT)
-            print("shlib-watch: opened pull request into asura.")
+            print("shlib-watch: opened pull request into Toren.")
 
     return 0
 

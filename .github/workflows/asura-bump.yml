@@ -1,6 +1,6 @@
 name: asura-bump
 
-# Open one pull request into asura when any package in .asura/stack has a
+# Open one pull request into Toren when any package in .asura/stack has a
 # newer upstream release. It never merges.
 
 on:
@@ -35,7 +35,7 @@ jobs:
           fi
       - uses: actions/checkout@v5
         with:
-          ref: asura
+          ref: Toren
           # A token with the workflows permission: GitHub's built-in token
           # may not push commits that touch .github/workflows (every rebase
           # rewrites them), and pull requests it opens do not start other
@@ -104,5 +104,5 @@ jobs:
             echo "pull request for $branch already open"
           else
             printf "$body" > /tmp/body
-            gh pr create --base asura --head "$branch" --title "$title" --body-file /tmp/body
+            gh pr create --base Toren --head "$branch" --title "$title" --body-file /tmp/body
           fi
