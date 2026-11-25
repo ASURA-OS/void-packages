@@ -20,9 +20,9 @@ Workflows (on `asura`):
 - Void's own `Check build` workflow lints and builds every package a pull
   request changes.
 
-ASURA's main repository (mohitjoer/ASURA-OS) builds the stack from `asura`,
-tests it against ASURA's desktop, and publishes it in ASURA's signed package
-repository.
+Toren Linux's main repository (mohitjoer/Toren-Linux) builds the stack from
+`asura`, tests it against Toren's desktop, and publishes it in Toren's signed
+package repository.
 
 When a library's soname changes, add its new line to `common/shlibs` and bump
 `revision=` of every package built against it (xbps-src names them).

@@ -18,7 +18,7 @@ concurrency:
 
 jobs:
   bump:
-    if: github.repository == 'ASURA-OS/void-packages'
+    if: github.repository == 'Toren-Linux/void-packages'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     env:
